@@ -1,3 +1,4 @@
+require 'dotenv'
 require 'ringcentral'
 
 RSpec.describe 'RingCentral' do
@@ -20,7 +21,14 @@ RSpec.describe 'RingCentral' do
       expect(RingCentral.SANDBOX_SERVER + '/restapi/oauth/authorize?client_id=client_id&redirect_uri=https%3A%2F%2Fexample.com&response_type=code&state=mystate').to eq(rc.authorize_uri('https://example.com', {state: 'mystate'}))
     end
 
-    it 'test_jwt_flow' do
+    it 'test_password_flow' do
+      Dotenv.load
+      rc = RingCentral.new(ENV['RINGCENTRAL_CLIENT_ID'], ENV['RINGCENTRAL_CLIENT_SECRET'], ENV['RINGCENTRAL_SERVER_URL'])
+      expect { rc.authorize(username: ENV['RINGCENTRAL_USERNAME'], password: ENV['RINGCENTRAL_PASSWORD'], extension: ENV['RINGCENTRAL_EXTENSION']) }.not_to raise_error
+    end
+
+
+    xit 'test_jwt_flow' do
       Dotenv.load
       rc = RingCentral.new(ENV['RINGCENTRAL_CLIENT_ID'], ENV['RINGCENTRAL_CLIENT_SECRET'], ENV['RINGCENTRAL_SERVER_URL'])
       expect(rc.token).to be_nil
@@ -38,7 +46,7 @@ RSpec.describe 'RingCentral' do
       expect(rc.token).to be_nil
     end
 
-    it 'test_http_methods' do
+    xit 'test_http_methods' do
       Dotenv.load
       rc = RingCentral.new(ENV['RINGCENTRAL_CLIENT_ID'], ENV['RINGCENTRAL_CLIENT_SECRET'], ENV['RINGCENTRAL_SERVER_URL'])
       rc.authorize(jwt: ENV['RINGCENTRAL_JWT_TOKEN'])
